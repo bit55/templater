@@ -13,7 +13,7 @@ use InvalidArgumentException;
 use Traversable;
 use Psr\Container\ContainerInterface;
 
-class TemplateRenderer implements TemplateRendererInterface
+class TemplateManager implements TemplateRendererInterface
 {
     protected $filesExtension = '.php';
     protected $defaultDirectory = 'templates';

@@ -14,7 +14,7 @@ use Traversable;
 
 class Template implements TemplateRendererInterface
 {
-    protected $manager; // template renderer
+    protected $manager; // template manager
     
     protected $sections   = [];
     protected $layout     = null;
@@ -29,7 +29,7 @@ class Template implements TemplateRendererInterface
      *
      * @param  array|Traversable $options
      */
-    public function __construct(TemplateRenderer $manager)
+    public function __construct(TemplateManager $manager)
     {
         $this->manager = $manager;
     }
@@ -285,5 +285,8 @@ class Template implements TemplateRendererInterface
     protected function widget($widgetClass, $options = [])
     {
         return (new $widgetClass($this->manager->getContainer(), $options))->run();
+        // $widget = $this->manager->getContainer()->get($widgetClass);
+        // $widget->setOptions($options);
+        // return $widget->run();
     }
 }
