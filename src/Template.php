@@ -77,7 +77,7 @@ class Template implements TemplateRendererInterface
         if (isset($this->layout)) {
             $template = new Template($this->manager);
             $template->sections['content'] = $content;
-            return $template->render($this->layout, $this->layoutData);
+            return $template->render($this->layout, array_merge($data, $this->layoutData));
         }
         
         return $content;
