@@ -5,7 +5,7 @@
  * @license   https://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace App\Template;
+namespace Bit55\Templater;
 
 use InvalidArgumentException;
 use Traversable;
@@ -28,11 +28,12 @@ class TwigTemplate implements TemplateRendererInterface
     {
         $this->manager = $manager;
         
-        $this->twigLoader = new Twig_Loader_Filesystem($this->manager->defaultDirectory);
+        $this->twigLoader = new Twig_Loader_Filesystem($this->manager->getDefaultDirectory());
         $this->twig = new Twig_Environment(
-            $this->twigLoader, array(
-            'cache' => 'data/cache/twig', //@todo move to config
-            )
+            $this->twigLoader, [
+                'cache' => 'data/cache/twig', //@todo move to config
+                'auto_reload' => true,
+            ]
         );
     }
     
