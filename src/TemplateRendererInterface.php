@@ -16,8 +16,8 @@ interface TemplateRendererInterface
      * Implementations MUST support the `namespace::template` naming convention,
      * and allow omitting the filename extension.
      *
-     * @param string $name
-     * @param array $data
+     * @param  string $name
+     * @param  array  $data
      * @return string
      */
     public function render($name, array $data = []);

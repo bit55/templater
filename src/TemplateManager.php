@@ -24,7 +24,7 @@ class TemplateManager implements TemplateRendererInterface
     /**
      * Constuctor with setting options.
      *
-     * @param  array|Traversable $options
+     * @param array|Traversable $options
      */
     public function __construct($options = null, ContainerInterface $container = null)
     {
@@ -47,11 +47,13 @@ class TemplateManager implements TemplateRendererInterface
     public function setOptions($options)
     {
         if (! is_array($options) && ! $options instanceof Traversable) {
-            throw new InvalidArgumentException(sprintf(
-                '"%s" expects an array or Traversable; received "%s"',
-                __METHOD__,
-                (is_object($options) ? get_class($options) : gettype($options))
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    '"%s" expects an array or Traversable; received "%s"',
+                    __METHOD__,
+                    (is_object($options) ? get_class($options) : gettype($options))
+                )
+            );
         }
 
         foreach ($options as $key => $value) {
@@ -70,6 +72,14 @@ class TemplateManager implements TemplateRendererInterface
             }
         }
         return $this;
+    }
+    
+    /**
+     * @param string $ext
+     */
+    public function setUsePackageDirs(string $ext = '.php')
+    {
+        $this->filesExtension = $ext;
     }
     
     /**
@@ -131,7 +141,7 @@ class TemplateManager implements TemplateRendererInterface
     /**
      * Getting template path by template name.
      *
-     * @param string $name
+     * @param  string $name
      * @return string
      * @throws LogicException
      */
@@ -162,13 +172,18 @@ class TemplateManager implements TemplateRendererInterface
     /**
      * Render template with layout if defined.
      *
-     * @param string $name
-     * @param array $data
+     * @param  string $name
+     * @param  array  $data
      * @return string
      */
     public function render($name, array $data = [])
     {
-        $template = new Template($this);
-        return $template->render($name, $data);
+        if (strpos($name, '.php')!==false) {
+            return (new PhpTemplate($this))->render($name, $data);
+        } else {
+            return (new TwigTemplate($this))->render($name, $data);
+        }
+        
+        throw new LogicException(sprintf("Template type '%s' not recognized", $name));
     }
 }

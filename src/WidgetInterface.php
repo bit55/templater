@@ -13,7 +13,7 @@ interface WidgetInterface
     /**
      * Set widget options.
      *
-     * @param array $options
+     * @param  array $options
      * @return self
      */
     public function setOptions(array $options = []);
@@ -21,8 +21,8 @@ interface WidgetInterface
     /**
      * Run widget processing.
      *
-     * @param string $name
-     * @param array $data
+     * @param  string $name
+     * @param  array  $data
      * @return string
      */
     public function run();

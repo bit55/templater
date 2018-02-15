@@ -12,7 +12,7 @@ use LogicException;
 use InvalidArgumentException;
 use Traversable;
 
-class Template implements TemplateRendererInterface
+class PhpTemplate implements TemplateRendererInterface
 {
     protected $manager; // template manager
     
@@ -25,9 +25,9 @@ class Template implements TemplateRendererInterface
     protected $prependSection = false;
     
     /**
-     * Constuctor with setting options.
+     * Constuctor
      *
-     * @param  array|Traversable $options
+     * @param TemplateManager $manager
      */
     public function __construct(TemplateManager $manager)
     {
@@ -37,7 +37,7 @@ class Template implements TemplateRendererInterface
     /**
      * Getting template path by template name.
      *
-     * @param string $name
+     * @param  string $name
      * @return string
      * @throws LogicException
      */
@@ -66,8 +66,8 @@ class Template implements TemplateRendererInterface
     /**
      * Render template with layout if defined.
      *
-     * @param string $name
-     * @param array $data
+     * @param  string $name
+     * @param  array  $data
      * @return string
      */
     public function render($name, array $data = [])
@@ -75,7 +75,7 @@ class Template implements TemplateRendererInterface
         $content = $this->partial($name, $data);
 
         if (isset($this->layout)) {
-            $template = new Template($this->manager);
+            $template = new PhpTemplate($this->manager);
             $template->sections['content'] = $content;
             return $template->render($this->layout, array_merge($data, $this->layoutData));
         }
@@ -86,8 +86,8 @@ class Template implements TemplateRendererInterface
     /**
      * Render single template (without layout).
      *
-     * @param string $name
-     * @param array $data
+     * @param  string $name
+     * @param  array  $data
      * @return string
      * @throws Exception
      */
@@ -101,7 +101,7 @@ class Template implements TemplateRendererInterface
         }
 
         ob_start();
-        require $templatePath;
+        include $templatePath;
         return ob_get_clean();
     }
     
@@ -109,9 +109,9 @@ class Template implements TemplateRendererInterface
      * Output a rendered template. Alias of self::renderPartial() method.
      *
      * @deprecated since version 1.0 use self::partial() instead.
-     * @param  string $name
-     * @param  array  $data
-     * @return null
+     * @param      string $name
+     * @param      array  $data
+     * @return     null
      */
     public function insert($name, array $data = [])
     {
@@ -134,8 +134,8 @@ class Template implements TemplateRendererInterface
     /**
      * Returns the content for a section block.
      *
-     * @param  string      $name    Section name
-     * @param  string      $default Default section content
+     * @param  string $name    Section name
+     * @param  string $default Default section content
      * @return string|null
      */
     public function section($name, $default = null)
@@ -149,14 +149,15 @@ class Template implements TemplateRendererInterface
 
     /**
      * Start a new section block.
-     * @param  string  $name
+     *
+     * @param  string $name
      * @return null
      */
     public function start($name)
     {
         if ($name === 'content') {
             throw new LogicException(
-            'The section name "content" is reserved.'
+                'The section name "content" is reserved.'
             );
         }
 
@@ -171,6 +172,7 @@ class Template implements TemplateRendererInterface
 
     /**
      * Start a new append section block.
+     *
      * @param  string $name
      * @return null
      */
@@ -183,6 +185,7 @@ class Template implements TemplateRendererInterface
     
     /**
      * Start a new prepend section block.
+     *
      * @param  string $name
      * @return null
      */
@@ -195,6 +198,7 @@ class Template implements TemplateRendererInterface
 
     /**
      * Stop the current section block.
+     *
      * @return null
      */
     public function stop()
@@ -222,6 +226,7 @@ class Template implements TemplateRendererInterface
 
     /**
      * Apply multiple functions to variable.
+     *
      * @param  mixed  $var
      * @param  string $functions
      * @return mixed
@@ -235,7 +240,7 @@ class Template implements TemplateRendererInterface
                 $var = call_user_func($function, $var);
             } else {
                 throw new Exception(
-                'The batch function could not find the "' . $function . '" function.'
+                    'The batch function could not find the "' . $function . '" function.'
                 );
             }
         }
@@ -245,6 +250,7 @@ class Template implements TemplateRendererInterface
 
     /**
      * Escape string.
+     *
      * @param  string      $string
      * @param  null|string $functions
      * @return string
@@ -266,6 +272,7 @@ class Template implements TemplateRendererInterface
 
     /**
      * Alias to escape function.
+     *
      * @param  string      $string
      * @param  null|string $functions
      * @return string
@@ -279,7 +286,7 @@ class Template implements TemplateRendererInterface
     /**
      *
      * @param string $widgetClass
-     * @param array $options
+     * @param array  $options
      * @return string
      */
     protected function widget($widgetClass, $options = [])

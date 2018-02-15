@@ -18,5 +18,9 @@
         "psr-4": {
             "Bit55\\Templater\\": "src/"
         }
-    }
+    },
+    "suggest": {
+        "twig/twig":"~2.0"
+    },
+    
 }
